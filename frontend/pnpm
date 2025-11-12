@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Fallback pnpm script that uses npm
 
 case "$1" in

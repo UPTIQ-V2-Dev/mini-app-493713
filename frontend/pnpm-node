@@ -1,0 +1,63 @@
+#!/usr/bin/env node
+
+const { spawn } = require('child_process');
+const args = process.argv.slice(2);
+
+// Map pnpm commands to npm equivalents
+let npmCommand = ['npm'];
+
+switch (args[0]) {
+  case 'install':
+    npmCommand.push('install');
+    break;
+  case 'build':
+    npmCommand = ['npm', 'run', 'build'];
+    break;
+  case 'dev':
+    npmCommand = ['npm', 'run', 'dev'];
+    break;
+  case 'preview':
+    npmCommand = ['npm', 'run', 'preview'];
+    break;
+  case 'eslint':
+    npmCommand = ['npm', 'run', 'eslint'];
+    break;
+  case 'prettier':
+    npmCommand = ['npm', 'run', 'prettier'];
+    break;
+  case 'add':
+    npmCommand.push('install');
+    if (args.length > 1) {
+      npmCommand.push(...args.slice(1));
+    }
+    break;
+  case 'remove':
+    npmCommand.push('uninstall');
+    if (args.length > 1) {
+      npmCommand.push(...args.slice(1));
+    }
+    break;
+  default:
+    if (args.length > 0) {
+      npmCommand.push(...args);
+    } else {
+      npmCommand = ['npm', '--version'];
+    }
+}
+
+console.log(`Running: ${npmCommand.join(' ')}`);
+
+const command = npmCommand.shift();
+const child = spawn(command, npmCommand, { 
+  stdio: 'inherit',
+  shell: true 
+});
+
+child.on('exit', (code) => {
+  process.exit(code || 0);
+});
+
+child.on('error', (err) => {
+  console.error('Error executing npm command:', err.message);
+  process.exit(1);
+});

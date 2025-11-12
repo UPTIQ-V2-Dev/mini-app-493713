@@ -36,10 +36,7 @@ export const LoginPage = () => {
   const loginMutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
-      login(data.user, {
-        access_token: data.access_token,
-        refresh_token: data.refresh_token,
-      });
+      login(data);
       navigate(ROUTES.DASHBOARD);
     },
   });

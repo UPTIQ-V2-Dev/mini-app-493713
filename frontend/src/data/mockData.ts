@@ -20,8 +20,16 @@ export const mockUsers: User[] = [mockUser, mockAdminUser];
 
 export const mockAuthResponse: AuthResponse = {
     user: mockUser,
-    access_token: 'mock-access-token-123456789',
-    refresh_token: 'mock-refresh-token-987654321'
+    tokens: {
+        access: {
+            token: 'mock-access-token-123456789',
+            expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
+        },
+        refresh: {
+            token: 'mock-refresh-token-987654321', 
+            expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 days
+        }
+    }
 };
 
 export const mockDashboardStats: DashboardStats = {
