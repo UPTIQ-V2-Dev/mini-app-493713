@@ -1,0 +1,52 @@
+import { mockAuthResponse } from '../data/mockData';
+import { api, clearAuthData, getStoredRefreshToken, setAuthData } from '../lib/api';
+import { mockApiDelay } from '../lib/utils';
+import type { AuthResponse, LoginCredentials, RegisterData } from '../types/common';
+
+export const loginUser = async (credentials: LoginCredentials): Promise<AuthResponse> => {
+    if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
+        console.log('--- MOCK API: login ---', credentials);
+        await mockApiDelay();
+        return mockAuthResponse;
+    }
+    const response = await api.post('/auth/login', credentials);
+    console.log('response in login', response);
+    setAuthData(response.data);
+    return response.data;
+};
+
+export const registerUser = async (userData: RegisterData): Promise<AuthResponse> => {
+    if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
+        console.log('--- MOCK API: register ---', userData);
+        await mockApiDelay();
+        return mockAuthResponse;
+    }
+    const response = await api.post('/auth/register', userData);
+    setAuthData(response.data);
+    return response.data;
+};
+
+export const refreshToken = async (): Promise<AuthResponse> => {
+    if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
+        console.log('--- MOCK API: refreshToken ---');
+        await mockApiDelay();
+        return mockAuthResponse;
+    }
+    const response = await api.post('/auth/refresh');
+    setAuthData(response.data);
+    return response.data;
+};
+
+export const logoutUser = async (): Promise<void> => {
+    if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
+        console.log('--- MOCK API: logout ---');
+        await mockApiDelay();
+        return;
+    }
+    const refreshToken = getStoredRefreshToken();
+    if (!refreshToken) {
+        throw new Error('No refresh token found');
+    }
+    await api.post('/auth/logout', { refreshToken });
+    clearAuthData();
+};

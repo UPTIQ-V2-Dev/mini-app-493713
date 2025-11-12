@@ -1,0 +1,23 @@
+#!/bin/bash
+# Fallback pnpm script that uses npm
+
+case "$1" in
+  install)
+    npm install
+    ;;
+  build)
+    npm run build
+    ;;
+  dev)
+    npm run dev
+    ;;
+  preview) 
+    npm run preview
+    ;;
+  eslint)
+    npm run eslint
+    ;;
+  *)
+    npm "$@"
+    ;;
+esac
